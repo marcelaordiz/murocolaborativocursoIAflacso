@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mural de experiencias con IA</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #form {
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #entries {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .entry {
+      background: #fff8dc;
+      border-left: 6px solid #ffb703;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .entry h3 {
+      margin-top: 0;
+    }
+
+    .meta {
+      font-size: 0.8em;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟 Mi primer encuentro con la IA</h1>
+
+  <div id="form">
+    <label for="nombre">Tu nombre:</label>
+    <input type="text" id="nombre" required />
+
+    <label for="herramienta">Primera herramienta de IA:</label>
+    <input type="text" id="herramienta" required />
+
+    <label for="experiencia">Describe tu experiencia:</label>
+    <textarea id="experiencia" required></textarea>
+
+    <label for="sensaciones">¿Qué sentiste?:</label>
+    <textarea id="sensaciones" required></textarea>
+
+    <label for="cambios">¿Observaste cambios en tus estudiantes?:</label>
+    <textarea id="cambios"></textarea>
+
+    <button onclick="guardarEntrada()">Publicar experiencia</button>
+  </div>
+
+  <div id="entries"></div>
+
+  <script>
+    function guardarEntrada() {
+      const nombre = document.getElementById('nombre').value;
+      const herramienta = document.getElementById('herramienta').value;
+      const experiencia = document.getElementById('experiencia').value;
+      const sensaciones = document.getElementById('sensaciones').value;
+      const cambios = document.getElementById('cambios').value;
+      const fecha = new Date().toLocaleDateString('es-ES');
+
+      const entrada = { nombre, herramienta, experiencia, sensaciones, cambios, fecha };
+      const almacenadas = JSON.parse(localStorage.getItem('iaEntradas')) || [];
+      almacenadas.push(entrada);
+      localStorage.setItem('iaEntradas', JSON.stringify(almacenadas));
+
+      mostrarEntradas();
+      document.getElementById('form').reset();
+    }
+
+    function mostrarEntradas() {
+      const contenedor = document.getElementById('entries');
+      contenedor.innerHTML = '';
+      const entradas = JSON.parse(localStorage.getItem('iaEntradas')) || [];
+      entradas.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.innerHTML = `
+          <h3>👤 ${e.nombre}</h3>
+          <p><strong>🛠️ Herramienta:</strong> ${e.herramienta}</p>
+          <p><strong>📝 Experiencia:</strong> ${e.experiencia}</p>
+          <p><strong>💭 Sensaciones:</strong> ${e.sensaciones}</p>
+          ${e.cambios ? `<p><strong>👥 Cambios observados:</strong> ${e.cambios}</p>` : ''}
+          <div class="meta">📅 Registrado el ${e.fecha}</div>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    window.onload = mostrarEntradas;
+  </script>
+</body>
+</html>
